@@ -2,4 +2,4 @@ language: objective-c
 osx_image: xcode8
 xcode_project: YouTube.xcodeproj
 xcode_scheme: YouTube
-xcode_sdk: iPhoneSimulator10.0
+xcode_sdk: iphonesimulator10.0
