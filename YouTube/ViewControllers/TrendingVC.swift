@@ -1,96 +1,43 @@
-//
-//  MainCollectionViewController.swift
-//  YouTube
-//
-//  Created by Haik Aslanyan on 6/22/16.
-//  Copyright © 2016 Haik Aslanyan. All rights reserved.
-//
+//  MIT License
+
+//  Copyright (c) 2017 Haik Aslanyan
+
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
+
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//  SOFTWARE.
 
 import UIKit
 
-
-class TrendingCollectionViewController: FeedCollectionViewController {
+class TrendingVC: HomeVC {
     
-    //MARK: - Properties
-    override var downloadURL: URL {
-        get {
-            return globalVariables.moreURLLink
-        }
-        set {}
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.videos.count + 1
     }
     
-    override var moreDownloadURL: URL {
-        get {
-            return globalVariables.urlLink
-        }
-        set {}
-    }
-    
-    //MARK: -  ViewController Lifecylce
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
-    // MARK: UICollectionViewDataSource
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.itemsList.count + 1
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        var returncell = UICollectionViewCell()
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Top", for: indexPath) as! TrendingItemsCell
-            returncell = cell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "TrendingCell")
+            return cell!
         } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! CustomCollectionViewCell
-                cell.resetCell()
-                if let video = videoItems[indexPath.row - 1] {
-                    cell.setupCell(videoItem: video)
-                } else{
-                    VideoItem.object(at: (indexPath.row - 1), fromList: itemsList, completiotion: { (video, index) in
-                        self.videoItems[index] = video
-                        DispatchQueue.main.async(execute: {
-                            self.collectionView?.reloadData()
-                            UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                        })
-                    })
-                }
-                returncell = cell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "VideoCell") as! VideoCell
+            cell.set(video: self.videos[indexPath.row - 1])
+            return cell
         }
-        return returncell
     }
-    
-    // MARK: UICollectionViewDelegate
-    override func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        var size = CGSize()
-        if indexPath.row == 0 {
-            size = CGSize.init(width: UIScreen.main.bounds.width, height: 100)
-        } else {
-        size = CGSize.init(width: UIScreen.main.bounds.width, height: 300)
-        }
-        return size
-    }
-    
 }
 
-//MARK TopCellClass
-class TrendingItemsCell: UICollectionViewCell {
-    
-    @IBOutlet var buttons: [UIButton]!
-    
-    func roundCorners()  {
-        for button in self.buttons {
-            button.layer.cornerRadius = 16
-            button.clipsToBounds = true
-        }
-    }
-    
-    //MARK: Inits
-    override func awakeFromNib() {
-        roundCorners()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-}
+
